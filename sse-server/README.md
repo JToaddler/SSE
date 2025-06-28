@@ -8,9 +8,9 @@ http://localhost:8080/sse-server/sse
 
 SSE Using Jakarta Jax RS
 
-Cottect & Disconnect:
+Connect & Disconnect:
 
-Step Connect : http://localhost:8080/sse-server/rest/events
+Connect : http://localhost:8080/sse-server/rest/events
 
 Disconnect : http://localhost:8080/sse-server/rest/cdievents/{uuid} 
 
