@@ -1,0 +1,21 @@
+version: '3.7'
+services:
+  spring-sse:
+    image: spring-sse-server:latest
+    container_name: spring-sse-server
+    ports:
+      - "8080:8080"
+    networks:
+      - sse-network
+  promethus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - sse-network
+    volumes:
+      - "./monitoring/prometheus/prometheus.yaml:/etc/prometheus/prometheus.yml"
+
+networks:
+  sse-network:
