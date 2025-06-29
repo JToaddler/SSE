@@ -16,6 +16,19 @@ services:
       - sse-network
     volumes:
       - "./monitoring/prometheus/prometheus.yaml:/etc/prometheus/prometheus.yml"
-
+    depends_on:
+     - spring-sse
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - sse-network
+    volumes:
+      - "./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources"
+    depends_on:
+     - promethus
+     - spring-sse
 networks:
   sse-network:

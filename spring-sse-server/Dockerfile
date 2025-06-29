@@ -9,4 +9,5 @@ RUN chmod g+rx ./entrypoint.sh \
 
 EXPOSE 8080
 
+
 CMD [ "./entrypoint.sh" ]
