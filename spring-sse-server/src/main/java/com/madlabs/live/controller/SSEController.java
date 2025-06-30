@@ -40,29 +40,40 @@ public class SSEController {
 	@PostMapping(value = "/send/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> sendMessage(@PathVariable String id, @RequestBody Map<String, Object> message) {
 		logger.info("Creating SSE emitter with ID: {}", id);
-		Runnable task = () -> {
-			sseConnectionService.sendMessage(id, message);
-		};
-		taskExecutor.execute(task);
+		if (sseConnectionService.isConnected(id)) {
+			Runnable task = () -> {
+				sseConnectionService.sendMessage(id, message);
+			};
+			taskExecutor.execute(task);
+		} else {
+			sseConnectionService.publishToSend(id, message);
+		}
 		return ResponseEntity.ok().build();
 	}
 
 	@PostMapping(value = "/broadcast", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> broadCaseMessage(@RequestBody Map<String, Object> message) {
 		logger.info("Broadcasting message to all emitters: {}");
-		Runnable task = () -> {
-			sseConnectionService.broadcastMessage(message);
-		};
-		taskExecutor.execute(task);
+		if (sseConnectionService.hasSubscribers()) {
+			Runnable task = () -> {
+				sseConnectionService.broadcastMessage(message);
+			};
+			taskExecutor.execute(task);
+		}
+		sseConnectionService.publishToBroadcast(message);
 		return ResponseEntity.ok().build();
 	}
 
 	@PostMapping(value = "/disconnect/{id}")
 	public ResponseEntity<Object> disconnect(@PathVariable String id) {
-		Runnable task = () -> {
-			sseConnectionService.disconnect(id);
-		};
-		taskExecutor.execute(task);
+		if (sseConnectionService.isConnected(id)) {
+			Runnable task = () -> {
+				sseConnectionService.disconnect(id);
+			};
+			taskExecutor.execute(task);
+		} else {
+			sseConnectionService.publishToDisconnect(id);
+		}
 		return ResponseEntity.ok().build();
 	}
 
