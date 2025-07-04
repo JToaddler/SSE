@@ -14,7 +14,7 @@ public class ObservableClient {
 		Client client = ClientBuilder.newClient();
 
 		client.register(RxObservableInvokerProvider.class);
-		WebTarget target = client.target("http://localhost:8080/servlet-sse/sse");
+		WebTarget target = client.target("https://stream.wikimedia.org/v2/stream/recentchange");
 
 		target.request().rx(RxObservableInvoker.class).get(String.class).subscribe(new Observer<String>() {
 			@Override
